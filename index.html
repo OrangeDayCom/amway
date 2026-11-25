@@ -22,12 +22,57 @@
       display: block;
       width: 100%;
     }
+  #play-button {
+    width: 100%;
+    min-height: 76px;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 0;
+    border-radius: 16px;
+    background: #222;
+    color: #fff;
+    font: inherit;
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+  }    
   </style>
 </head>
 <body>
   <main>
     <h1>암웨이</h1>
+    <button id="play-button" type="button">▶ 재생하기</button>
     <audio controls autoplay preload="metadata" src="./new_world_2.mp3"></audio>
+    <p id="play-status" role="status"></p>
   </main>
+<script>
+  const audio = document.querySelector('#audio-player');
+  const button = document.querySelector('#play-button');
+  const status = document.querySelector('#play-status');
+
+  button.addEventListener('click', async () => {
+    status.textContent = '';
+
+    if (!audio.paused) {
+      audio.pause();
+      return;
+    }
+
+    try {
+      await audio.play();
+    } catch {
+      status.textContent = '재생할 수 없습니다. 잠시 후 다시 시도해 주세요.';
+    }
+  });
+
+  function updateButton() {
+    button.textContent = audio.paused ? '▶ 재생하기' : '⏸ 일시정지';
+  }
+
+  audio.addEventListener('play', updateButton);
+  audio.addEventListener('pause', updateButton);
+  audio.addEventListener('ended', updateButton);
+  updateButton();
+</script>  
 </body>
 </html>
